@@ -259,17 +259,19 @@ namespace Employee_Management_System
                             goto Name;
 
                         }
-                        if(empName.Length < 3)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("Length of Employee Name should be Greater than 3");
-                            Console.ResetColor();
-                            goto Name;
-                        }
+                        
                         if (isValidString(empName))
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("Employee name should contain only letters and must not include special characters or numbers.");
+                            Console.ResetColor();
+                            goto Name;
+                        }
+
+                        if (empName.Length < 3)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Length of Employee Name should be Greater than 3");
                             Console.ResetColor();
                             goto Name;
                         }
