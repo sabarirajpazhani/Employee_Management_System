@@ -9,7 +9,7 @@ namespace Employee_Management_System
     {
         public int EmployeeID { get; set; }
         public string EmpName { get; set; }
-        public string Email { get; set; }   
+        public string Email { get; set; }
         public string Department { get; set; }
         public double Salary { get; set; }
     }
@@ -112,6 +112,11 @@ namespace Employee_Management_System
                 flag = false;
             }
 
+            if (!System.Text.RegularExpressions.Regex.IsMatch(word, @"[a-zA-Z]+$"))
+            {
+                flag = false;
+            }
+
             return flag;
         }
         public static int EmpId = 106;
@@ -121,9 +126,9 @@ namespace Employee_Management_System
             {
                 {101, new PermanentEmployee {
                     EmployeeID = 101,
-                    EmpName = "Thamizh",
-                    Email = "Thamizh@gmail.com",
-                    Department = "Development",
+                    EmpName = "thamizh",
+                    Email = "thamizh@gmail.com",
+                    Department = "development",
                     Salary = 75000,
                     JoiningDate = DateOnly.FromDateTime(new DateTime(2020, 5, 15)),
                     HasInsuranceCoverage = true,
@@ -131,9 +136,9 @@ namespace Employee_Management_System
                 } },
                 {102, new ContractEmployee {
                     EmployeeID = 102,
-                    EmpName = "Sabari",
+                    EmpName = "tabari",
                     Email = "sabari@gmail.com",
-                    Department = "Development",
+                    Department = "development",
                     Salary = 55000,
                     ContractDurationMonths = 12,
                     isRemote = true
@@ -142,7 +147,7 @@ namespace Employee_Management_System
                     EmployeeID = 103,
                     EmpName = "Sharmila",
                     Email = "sharmila@gmail.com",
-                    Department = "HR",
+                    Department = "hr",
                     Salary = 60000,
                     JoiningDate = DateOnly.FromDateTime(new DateTime(2020, 5, 15)),
                     HasInsuranceCoverage = true,
@@ -150,27 +155,27 @@ namespace Employee_Management_System
                 }},
                 {104, new ContractEmployee {
                     EmployeeID = 104,
-                    EmpName = "Subha",
+                    EmpName = "subha",
                     Email = "subha@gmail.com",
-                    Department = "Development",
+                    Department = "development",
                     Salary = 55000,
                     ContractDurationMonths = 12,
                     isRemote = true
                 }},
                 {105, new ContractEmployee {
                     EmployeeID = 105,
-                    EmpName = "Raj",
+                    EmpName = "raj",
                     Email = "raj@gmail.com",
-                    Department = "Marketing",
+                    Department = "marketing",
                     Salary = 50000,
                     ContractDurationMonths = 6,
                     isRemote = false
                 } },
                 {106, new PermanentEmployee {
                     EmployeeID = 106,
-                    EmpName = "Lakshmi",
+                    EmpName = "lakshmi",
                     Email = "lakshmi@gmail.com",
-                    Department = "QA",
+                    Department = "qa",
                     Salary = 65000,
                     JoiningDate = DateOnly.FromDateTime(new DateTime(2021, 3, 25)),
                     HasInsuranceCoverage = false,
@@ -203,13 +208,20 @@ namespace Employee_Management_System
                 Console.WriteLine();
 
                 int choice = 0;
-            Choice:
+                Choice:
                 try
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("Enter the Choice for the Employee Management System : ");
                     Console.ResetColor();
                     int Choice = int.Parse(Console.ReadLine());
+                    if (Choice > 6 || Choice == 0)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Choice Must be Less than 6 and not must be Zero");
+                        Console.ResetColor();
+                        goto Choice;
+                    }
                     choice = Choice;
                     Console.WriteLine();
                 }
@@ -247,10 +259,17 @@ namespace Employee_Management_System
                             goto Name;
 
                         }
+                        if(empName.Length < 3)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Length of Employee Name should be Greater than 3");
+                            Console.ResetColor();
+                            goto Name;
+                        }
                         if (isValidString(empName))
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("Employee name should contain only letters and must not include special characters or numbers.");
+                            Console.WriteLine("Employee name should contain only letters and must not include special characters or numbers.");
                             Console.ResetColor();
                             goto Name;
                         }
@@ -264,7 +283,7 @@ namespace Employee_Management_System
                         if (PerEmail.Length == 0 || PerEmail == null)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("Enter the Email :(");
+                            Console.WriteLine("Please Enter Your  Email  :(");
                             Console.ResetColor();
                             goto Email;
                         }
@@ -304,7 +323,7 @@ namespace Employee_Management_System
                             Console.WriteLine("Invalid date format. Please enter the date in yyyy-MM-dd format.");
                             Console.ResetColor();
                         }
-
+                        Desicion:
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.Write("Does the employee have insurance coverage ? (Y / N) :");
                         Console.ResetColor();
@@ -313,11 +332,18 @@ namespace Employee_Management_System
                         {
                             permanent.HasInsuranceCoverage = true;
                         }
-                        if (ch == 'n' || ch == 'N')
+                        else if (ch == 'n' || ch == 'N')
                         {
                             permanent.HasInsuranceCoverage = false;
                         }
-                        Console.ForegroundColor = ConsoleColor.Green;
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Enter the Decision correctly (only 'Y' or 'N')");
+                            Console.ResetColor();
+                            goto Desicion;
+                        }
+                           Console.ForegroundColor = ConsoleColor.Green;
                         Console.Write("Enter Leave Encashment Balance : ");
                         Console.ResetColor();
                         permanent.LeaveEncashmentBalance = int.Parse(Console.ReadLine());
@@ -651,7 +677,7 @@ namespace Employee_Management_System
                         Console.ResetColor();
 
                         viewAllEmployee(Employement);
-                        EmpId:
+                    EmpId:
                         int empIdToRemove = 0;
                         try
                         {
@@ -711,6 +737,45 @@ namespace Employee_Management_System
                         Console.ReadKey(true);
 
                         break;
+
+                    case 5:
+
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine("-------------------------------------------------------------");
+                        Console.ResetColor();
+                        Console.WriteLine();
+                        Console.WriteLine();
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("                     You Choose to Exist :)                  ");
+                        Console.ResetColor();
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine("-------------------------------------------------------------");
+                        Console.ResetColor();
+                        Console.WriteLine();
+                        Console.WriteLine();
+
+                        for (int i = 5; i > 0; i--)
+                        {
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.Write("                 Existing From Grocery: ");
+                            Console.ResetColor();
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($" {i} ");
+                            Console.ResetColor();
+                            Thread.Sleep(1000);
+                        }
+                        break;
+                }
+                if (choice == 5)
+                {
+
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine("                      ~ * Thank You * ~                    ");
+                    Console.ResetColor();
+                    Console.ReadKey();
+                    break;
                 }
             }
         }
