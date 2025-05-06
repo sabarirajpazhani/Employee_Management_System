@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Diagnostics.Metrics;
 
@@ -9,21 +9,86 @@ namespace Employee_Management_System
         public int EmployeeID { get; set; }
         public string EmpName { get; set; }
         public string Department { get; set; }
-        public double Salary { get; set}
+        public double Salary { get; set; }
     }
     class PermanentEmployee : Employee
     {
         public DateOnly JoiningDate { get; set; }
-        public bool HasInsuranceCoverage { get; set; }  
+        public bool HasInsuranceCoverage { get; set; }
         public int LeaveEncashmentBalance { get; set; }
     }
     class ContractEmployee : Employee
     {
-        public int ContractDurationMonths {  get; set; }   
+        public int ContractDurationMonths { get; set; }
         public bool isRemote { get; set; }
     }
     public class Program
     {
+        public static void viewAllEmployee(Hashtable Employement)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.WriteLine("----------------------------------------------------------------------------------------------------------------------------------------------------------");
+            Console.ResetColor();
+
+            Console.WriteLine(
+                $"{"Employee_ID",-15}" +
+                $"{"Employee_Name",-20}" +
+                $"{"Department",-15}" +
+                $"{"Salary",-10}" +
+                $"{"JoiningDate",-15}" +
+                $"{"Insurance",-12}" +
+                $"{"LeaveBalance",-15}" +
+                $"{"ContractMonths",-17}" +
+                $"{"Is_Remote",-10}");
+
+            //Console.WriteLine("Employee_ID\t\tEmployee_Names\t\tDepartment\t\tSalary\t\tJoiningDate\t\tInsuranceCoverage\t\tLeaveEncashmentBalance\t\tContractDurationMonths\t\tIs_Remote                                                            ");
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.WriteLine("----------------------------------------------------------------------------------------------------------------------------------------------------------");
+            Console.ResetColor();
+
+            foreach (DictionaryEntry i in Employement)
+            {
+                var emp = i.Value; ;
+
+                if(emp is PermanentEmployee p)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine(
+                        $"{p.EmployeeID,-15}" +
+                        $"{p.EmpName,-20}" +
+                        $"{p.Department,-15}" +
+                        $"{p.Salary,-10}" +
+                        $"{p.JoiningDate,-15}" +
+                        $"{p.HasInsuranceCoverage,-12}" +
+                        $"{p.LeaveEncashmentBalance,-15}" +
+                        $"  - \t\t" +
+                        $"  - \t\t\t");
+                    //Console.WriteLine($"{p.EmployeeID}\t\t\t{p.EmpName}\t\t\t{p.Department}\t\t{p.Salary}\t\t{p.JoiningDate}\t\t{p.HasInsuranceCoverage}\t\t\t{p.LeaveEncashmentBalance}\t\t\t - \t\t\t\t -                                                                                                           ");
+                    Console.ResetColor();
+                    Console.WriteLine();
+                }
+                else if (emp is ContractEmployee c)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine(
+                        $"{c.EmployeeID,-15}" +
+                        $"{c.EmpName,-20}" +
+                        $"{c.Department,-15}" +
+                        $"{c.Salary,-10}" +
+                        $"- \t\t" +
+                        $"   -\t\t" +
+                        $"-\t\t" +
+                        $"{c.ContractDurationMonths,-17}" +
+                        $"{c.isRemote,-10}");
+                    //Console.WriteLine($"{c.EmployeeID}\t\t\t{c.EmpName}\t\t\t{c.Department}\t\t{c.Salary}\t\t - \t\t - \t\t - \t\t  {c.ContractDurationMonths}\t\t\t{c.isRemote}");
+                    Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.WriteLine("----------------------------------------------------------------------------------------------------------------------------------------------------------");
+                    Console.ResetColor();
+                    Console.WriteLine();
+                }
+            }
+        }
         public static bool isValidString(string word)
         {
             bool flag = true;
@@ -43,7 +108,7 @@ namespace Employee_Management_System
         {
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("------------------------------ Employee Management System -----------------------------");
-            Console.WriteLine("||      ||       ||      ||       ||       ||      ||       ||       ||      ||      ||");      
+            Console.WriteLine("||      ||       ||      ||       ||       ||      ||       ||       ||      ||      ||");
             Console.WriteLine("---------------------------------------------------------------------------------------");
             Console.ResetColor();
             Console.WriteLine();
@@ -120,14 +185,15 @@ namespace Employee_Management_System
             while (true)
             {
                 int choice = 0;
-                Choice:
+            Choice:
                 try
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Enter the Choice for the Employee Management System : ");
+                    Console.Write("Enter the Choice for the Employee Management System : ");
                     Console.ResetColor();
                     int Choice = int.Parse(Console.ReadLine());
                     choice = Choice;
+                    Console.WriteLine();
                 }
                 catch (FormatException e)
                 {
@@ -137,7 +203,7 @@ namespace Employee_Management_System
                     goto Choice;
                 }
 
-                switch(choice)
+                switch (choice)
                 {
                     case 1:
                         Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -181,23 +247,34 @@ namespace Employee_Management_System
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.Write("Enter the Salary : ");
                         Console.ResetColor();
-                        double salary = double.Parse(Console.ReadLine());   
+                        double salary = double.Parse(Console.ReadLine());
                         permanent.Salary = salary;
 
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write("Enter the Date : ");
+                        Console.Write("Enter the Date (yyyy-MM-dd): ");
                         Console.ResetColor();
-                        permanent.JoiningDate = DateOnly.FromDateTime(DateTime.Now);
+                        string inputDate = Console.ReadLine();  
+
+                        if(DateOnly.TryParse(inputDate, out DateOnly joiningDate))
+                        {
+                            permanent.JoiningDate = joiningDate;
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Invalid date format. Please enter the date in yyyy-MM-dd format.");
+                            Console.ResetColor();
+                        }
 
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Does the employee have insurance coverage ? (Y / N) :");
+                        Console.Write("Does the employee have insurance coverage ? (Y / N) :");
                         Console.ResetColor();
                         char ch = char.Parse(Console.ReadLine());
-                        if(ch == 'y' || ch == 'Y')
+                        if (ch == 'y' || ch == 'Y')
                         {
                             permanent.HasInsuranceCoverage = true;
                         }
-                        if(ch == 'n' || ch == 'N')
+                        if (ch == 'n' || ch == 'N')
                         {
                             permanent.HasInsuranceCoverage = false;
                         }
@@ -207,15 +284,109 @@ namespace Employee_Management_System
                         permanent.LeaveEncashmentBalance = int.Parse(Console.ReadLine());
 
                         EmpId++;
+                        permanent.EmployeeID = EmpId;
 
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write("Employee ID : ");
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.Write($"Employee ID for {empName} : ");
                         Console.ResetColor();
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine(EmpId);
+                        Console.ResetColor();
 
                         Employement.Add(EmpId, permanent);
 
 
+                        Console.ForegroundColor = ConsoleColor.DarkCyan;
+                        Console.WriteLine("--------------------------------------------------------------------------------------------------");
+                        Console.ResetColor();
+
+                        Console.WriteLine(
+                             $"{"Employee_ID",-15}" +
+                             $"{"Employee_Name",-20}" +
+                             $"{"Department",-15}" +
+                             $"{"Salary",-10}" +
+                             $"{"JoiningDate",-15}" +
+                             $"{"Insurance",-12}" +
+                             $"{"LeaveBalance",-15}");
+                        Console.ForegroundColor = ConsoleColor.DarkCyan;
+                        Console.WriteLine("---------------------------------------------------------------------------------------------------");
+                        Console.ResetColor();
+                        Console.WriteLine();
+                        PermanentEmployee newPerEmp = (PermanentEmployee)Employement[EmpId];
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.WriteLine(
+                        $"{newPerEmp.EmployeeID,-15}" +
+                        $"{newPerEmp.EmpName,-20}" +
+                        $"{newPerEmp.Department,-15}" +
+                        $"{newPerEmp.Salary,-10}" +
+                        $"{newPerEmp.JoiningDate,-15}" +
+                        $"{newPerEmp.HasInsuranceCoverage,-12}" +
+                        $"{newPerEmp.LeaveEncashmentBalance,-15}");
+                        //Console.WriteLine($"{newPerEmp.EmployeeID}\t\t\t{newPerEmp.EmpName}\t\t\t{newPerEmp.Department}\t\t{newPerEmp.Salary}");
+                        Console.ResetColor();
+                        Console.WriteLine();
+                        Console.WriteLine("---------------------------------------------------------------------------------------------------");
+                        Console.ResetColor();
+
+                        Console.WriteLine();
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        Console.WriteLine($"Employee {EmpId} is Created Successfully :)");
+                        Console.ResetColor();
+                        Console.WriteLine();
+
+                        Decision:
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.Write("If you Want to View all the Employee's Details ? (Y/N) : ");
+                        Console.ResetColor();
+                        char view = char.Parse( Console.ReadLine() ); 
+                        if( view == 'y' || view == 'Y')
+                        {
+                            viewAllEmployee(Employement);
+                            Console.WriteLine();
+                            Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        }
+                        else if (view == 'n' || view == 'N')
+                        {
+                            Console.WriteLine();
+                            Console.ForegroundColor = ConsoleColor.Magenta;
+                            Console.WriteLine("~ * Okay...!!! * ~");
+                            Console.ResetColor();
+                            Console.WriteLine();
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Enter the decision properly using only 'y' or 'n'");
+                            Console.ResetColor();
+                            goto Decision;
+                        }
+
+                        Con:
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.Write("Do you want to continue creating the employee? (Y/N): ");
+                        Console.ResetColor();
+                        char con = char.Parse( Console.ReadLine() );    
+                        if(con == 'y'||con == 'Y')
+                        {
+                            goto Name;
+                        }
+                        else if( con == 'n' || con == 'N')
+                        {
+                            Console.WriteLine();
+                            Console.ForegroundColor = ConsoleColor.Magenta;
+                            Console.WriteLine("~ * Thank You...!!! * ~");
+                            Console.ResetColor();
+                            Console.WriteLine();
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Enter the decision properly using only 'y' or 'n'");
+                            Console.ResetColor();
+                            goto Con;
+                        }
+
+                        break;
                 }
             }
         }
